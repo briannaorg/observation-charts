@@ -1,3 +1,7 @@
+svg.observation-chart {
+    background-color: white;
+}
+
 /* Style matching the IAU constellation maps. */
 .overlay { 
 }
@@ -85,13 +89,6 @@
 }
 
 /* Chart features */
-.zenith {
-    fill: rgb(128,214,247);
-}
-.zenith {
-    fill: rgb(128,214,247);
-    stroke: rgb(128,214,247);
-}
 .zenith path {
     stroke: rgb(128,214,247);
 }

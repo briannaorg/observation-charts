@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>The Sky Tonight</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/jasny-bootstrap/dist/css/jasny-bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+    
+    <link rel="stylesheet" type="text/css" href="../css/chart-base.css">
+    <style type="text/css">
+        #sky-chart {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        #skychart-nav-toggle {
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            margin: 0;
+            padding: 0;
+
+            display: block;
+            width: 54px;
+            height: 54px;
+            font-size: 36px;
+            padding-left: 9px;
+            padding-right: 9px;
+
+            color: white;
+            line-height: 1.5em;
+            text-transform: uppercase;
+            font-weight: 500;
+            z-index: 500;
+
+            color: #5e5e5e;
+            background-color: rgba(248, 248, 248, 0.85);
+            float: none;
+            border: 0;
+            border-radius: 0;
+        }
+        #skychart-nav { 
+            z-index: 1000;
+            float: left;
+            color: #5e5e5e;
+            background-color: rgba(248, 248, 248, 0.85);
+        }
+
+        .navmenu li.divider {
+            height: 1px;
+            margin: 9px 0;
+            overflow: hidden;
+            background-color: #e5e5e5;
+        }
+
+        /*
+        #theme-select li {
+            display: inline-block;
+            text-align: center;
+        }
+        */
+        li.theme-select a:before {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+	    border-radius: 50%;
+            background-color: white;
+            content: "";
+            margin-top: 2px;
+            margin-right: 10px;
+        }
+        li.theme-select#theme-day-select a:before {
+            background-color: white;
+        }
+        li.theme-select#theme-mono-select a:before {
+            background-color: grey;
+        }
+        li.theme-select#theme-dark-select a:before {
+            background-color: black;
+        }
+        li.theme-select#theme-night-select a:before {
+            background-color: #7F0A0E; 
+        }
+
+        /* Theme support */
+        body.day { 
+            background-color: white;
+        }
+        body.mono { 
+            background-color: white;
+        }
+        
+        body.dark { 
+            background-color: black;
+        }
+        body.dark #skychart-nav-toggle {
+            color: #999;
+            background-color: #222;
+        }
+        body.dark #sky-chart {
+            background-color: black;
+        }
+        body.dark #skychart-nav {
+            background-color: #222;
+            border-color: #080808
+        }
+        body.dark #skychart-nav .navmenu-brand {
+            color: #999
+        }
+        body.dark #skychart-nav .navmenu-brand:hover,
+        body.dark #skychart-nav .navmenu-brand:focus {
+            color: #fff;
+            background-color: transparent
+        }
+        body.dark #skychart-nav .navmenu-text,
+        body.dark #skychart-nav .navmenu-nav>li>a {
+            color: #999
+        }
+        body.dark #skychart-nav .navmenu-nav>.dropdown>a:hover .caret,
+        body.dark #skychart-nav .navmenu-nav>.dropdown>a:focus .caret,
+        body.dark #skychart-nav .navmenu-nav>.open>a .caret,
+        body.dark #skychart-nav .navmenu-nav>.open>a:hover .caret,
+        body.dark #skychart-nav .navmenu-nav>.open>a:focus.caret {
+            border-top-color: #fff;
+            border-bottom-color: #fff
+        }
+        body.dark #skychart-nav .navmenu-nav>.open>a,
+        body.dark #skychart-nav .navmenu-nav>.open>a:hover,
+        body.dark #skychart-nav .navmenu-nav>.open>a:focus {
+            background-color: #080808;
+            color: #fff
+        }
+        body.dark #skychart-nav .navmenu-nav>.dropdown>a .caret {
+            border-top-color: #999;
+            border-bottom-color: #999
+        }
+        body.dark #skychart-nav .navmenu-nav.dropdown-menu {
+            background-color: #080808
+        }
+        body.dark #skychart-nav .navmenu-nav.dropdown-menu>.divider,
+        body.dark #skychart-nav .navmenu-nav li.divider {
+            background-color: #080808
+        }
+        body.dark #skychart-nav .navmenu-nav.dropdown-menu>.active>a,
+        body.dark #skychart-nav .navmenu-nav.dropdown-menu>.active>a:hover,
+        body.dark #skychart-nav .navmenu-nav.dropdown-menu>.active>a:focus {
+            background-color: #000
+        }
+        body.dark #skychart-nav .navmenu-nav>li>a:hover,
+        body.dark #skychart-nav .navmenu-nav>li>a:focus{   
+            color: #fff;
+            background-color: transparent
+        }
+        body.dark #skychart-nav .navmenu-nav>.active>a, 
+        body.dark #skychart-nav .navmenu-nav>.active>a:hover, 
+        body.dark #skychart-nav .navmenu-nav>.active>a:focus {
+            color: #fff;
+            background-color: #080808
+        }
+
+        body.dark #skychart-nav .navmenu-nav>.disabled>a, 
+        body.dark #skychart-nav .navmenu-nav>.disabled>a:hover, 
+        body.dark #skychart-nav .navmenu-nav>.disabled>a:focus {
+            color: #444;
+            background-color: transparent
+        }
+
+        body.night { 
+            background-color: black;
+        }
+        body.night #skychart-nav-toggle {
+            color: #FF3333;
+            background-color: #200;
+        }
+        body.night #skychart-nav {
+            background-color: #200;
+            border-color: #080000;
+        }
+        body.night #skychart-nav .navmenu-brand {
+            color: #900;
+        }
+        body.night #skychart-nav .navmenu-brand:hover,
+        body.night #skychart-nav .navmenu-brand:focus {
+            color: #f33;
+            background-color: transparent
+        }
+        body.night #skychart-nav .navmenu-text,
+        body.night #skychart-nav .navmenu-nav>li>a {
+            color: #900;
+        }
+        body.night #skychart-nav .navmenu-nav>.dropdown>a:hover .caret,
+        body.night #skychart-nav .navmenu-nav>.dropdown>a:focus .caret,
+        body.night #skychart-nav .navmenu-nav>.open>a .caret,
+        body.night #skychart-nav .navmenu-nav>.open>a:hover .caret,
+        body.night #skychart-nav .navmenu-nav>.open>a:focus.caret {
+            border-top-color: #f33;
+            border-bottom-color: #f33;
+        }
+        body.night #skychart-nav .navmenu-nav>.open>a,
+        body.night #skychart-nav .navmenu-nav>.open>a:hover,
+        body.night #skychart-nav .navmenu-nav>.open>a:focus {
+            background-color: #080000;
+            color: #f33;
+        }
+        body.night #skychart-nav .navmenu-nav>.dropdown>a .caret {
+            border-top-color: #900;
+            border-bottom-color: #900;
+        }
+        body.night #skychart-nav .navmenu-nav.dropdown-menu {
+            background-color: #080000;
+        }
+        body.night #skychart-nav .navmenu-nav.dropdown-menu>.divider,
+        body.night #skychart-nav .navmenu-nav li.divider {
+            background-color: #200;
+        }
+        body.night #skychart-nav .navmenu-nav.dropdown-menu>.active>a,
+        body.night #skychart-nav .navmenu-nav.dropdown-menu>.active>a:hover,
+        body.night #skychart-nav .navmenu-nav.dropdown-menu>.active>a:focus {
+            background-color: #000;
+        }
+        body.night #skychart-nav .navmenu-nav>li>a:hover,
+        body.night #skychart-nav .navmenu-nav>li>a:focus{   
+            color: #f33;
+            background-color: transparent
+        }
+        body.night #skychart-nav .navmenu-nav>.active>a, 
+        body.night #skychart-nav .navmenu-nav>.active>a:hover, 
+        body.night #skychart-nav .navmenu-nav>.active>a:focus {
+            color: #f33;
+            background-color: #080000;
+        }
+
+        body.night #skychart-nav .navmenu-nav>.disabled>a, 
+        body.night #skychart-nav .navmenu-nav>.disabled>a:hover, 
+        body.night #skychart-nav .navmenu-nav>.disabled>a:focus {
+            color: #400;
+            background-color: transparent
+        }
+
+    </style>    
+  </head>
+  <body>
+
+    <nav id="skychart-nav" class="navmenu navmenu-default navmenu-fixed-left offcanvas" role="navigation">
+      <a class="navmenu-brand" href="#">Observation Charts</a>
+
+      <ul class="nav navmenu-nav">
+        <li><a id="current-datetime" class="chart-info">Current Datetime</a></li>
+        <li><a id="current-location" class="chart-info">Current Location</a></li>
+
+        <li class="divider"></li>
+
+        <li id="sky-now"><a>Sky Right Now</a></li>
+        <li id="sky-tonight" class="active"><a>Sky Tonight (10 PM)</a></li>
+
+        <li class="divider"></li>
+
+        <li id="sky-sd" class="active"><a>"SD"</a></li>
+        <li id="sky-hd"><a>"HD"</a></li>
+
+        <li class="divider"></li>
+        
+        <!-- 
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Appearance <b class="caret"></b></a>
+          <ul id="theme-select" class="dropdown-menu navmenu-nav" role="menu">
+          -->
+            <li class="theme-select" id="theme-day-select"><a>Day</a></li>
+            <li class="theme-select" id="theme-mono-select"><a>Mono</a></li>
+            <li class="theme-select" id="theme-dark-select"><a>Dark</a></li>
+            <li class="theme-select" id="theme-night-select"><a>Night</a></li>
+            <!--
+          </ul>
+        </li>
+        -->
+      </ul>
+
+    </nav>
+
+    <button type="button" id="skychart-nav-toggle" class="navbar-toggle" data-toggle="offcanvas" data-target="#skychart-nav" >
+      O
+    </button>
+
+    <div id="sky-chart"></div>
+
+    <script src="../bower_components/d3/d3.min.js" charset="utf-8"></script>
+    <script src="../bower_components/datejs/build/production/date.min.js" charset="utf-8"></script>
+    <script src="../bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
+    <script src="../bower_components/jasny-bootstrap/dist/js/jasny-bootstrap.min.js" charset="utf-8"></script>
+    <script src="../bower_components/moment/min/moment.min.js"></script>
+    <script src="../bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    
+    <script src="../js/chart.js" charset="utf-8"/>
+    <script>console.log("something!");</script>
+    <script>
+      (function($){
+
+          // Set up the datetimepicker
+          $('#datetimepicker1').datetimepicker();
+
+          $('#skychart-nav').on('show.bs.offcanvas', function(e) {
+              $('#skychart-nav-toggle').hide(200);
+              console.log("offcanvas shown");
+          });
+          $('#skychart-nav').on('hide.bs.offcanvas', function(e) {
+              $('#skychart-nav-toggle').show(200);
+              console.log("offcanvas hidden");
+          });
+
+          $('#sky-chart').on('drawn', function(e, chart) {
+              $('#current-datetime').html(chart.info.datetime);
+              $('#current-location').html(chart.info.location);
+          });
+
+          $('#sky-chart').on('drawn', function(e, chart) {
+              $('#current-datetime').html(chart.info.datetime);
+              $('#current-location').html(chart.info.location);
+          });
+
+          var options = {
+                  time: 22,
+                  size: {
+                      width: '100%',
+                      height: '100%',
+                  },
+                  data: {
+                      constellations: '../constellations.json',
+                      objects: '../objects.json',
+                      stars: '../stars.json'
+                  },
+              };
+
+          // Get the user's GPS coordinates if they'll let us. Otherwise use New York.
+          // XXX: Add a timeout
+          if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(function(position) {
+              console.log("setting up chart with location");
+                  options.location = { 
+                          latitude: position.coords.latitude, 
+                          longitude: position.coords.longitude
+                      };
+                  $('#sky-chart').observationChart(options);
+              });
+          } else {
+              // Set up the chart
+              console.log("setting up chart without location");
+              $('#sky-chart').observationChart(options);
+          }
+
+          $('#sky-chart').observationChart(options);
+
+          // Set up chart configuration options
+          $('#sky-now a').click(function(e) {
+              $('#sky-tonight').removeClass('active');
+              $('#sky-now').addClass('active');
+              $('#sky-chart').observationChart({
+                  date: new Date(),
+                  time: null
+              });
+          });
+          $('#sky-tonight a').click(function(e) {
+              $('#sky-now').removeClass('active');
+              $('#sky-tonight').addClass('active');
+              $('#sky-chart').observationChart({
+                  time: 22
+              });
+          });
+
+          // Select "SD" (moderate magnitude stars/objects) and "HD" (low magnitude stars and objects)
+          $('#sky-hd a').click(function(e) {
+              $('#sky-sd').removeClass('active');
+              $('#sky-hd').addClass('active');
+              $('#sky-chart').observationChart({
+                  data: {
+                      stars: 'starsHD.json',
+                      objects: 'objects.json',
+                  },
+                  stars: {
+                      magnitude: 10,
+                  },
+
+                  galaxies: {
+                      magnitude: 15
+                  },
+                  
+                  openclusters: {
+                      magnitude: 8,
+                  },
+
+                  globularclusters: {
+                      magnitude: 12
+                  },
+
+                  planetarynebulas: {
+                      magnitude: 20,
+                  },
+
+                  brightnebulas: {
+                      magnitude: 20,
+                  }
+              });
+          });
+          $('#sky-sd a').click(function(e) {
+              $('#sky-hd').removeClass('active');
+              $('#sky-sd').addClass('active');
+              $('#sky-chart').observationChart({
+                  data: {
+                      stars: 'stars.json',
+                      objects: 'objects.json',
+                  },
+                  stars: {
+                      magnitude: 5,
+                  },
+
+                  galaxies: {
+                      magnitude: 8,
+                  },
+                  
+                  openclusters: {
+                      magnitude: 6,
+                  },
+
+                  globularclusters: {
+                      magnitude: 8,
+                  },
+
+                  planetarynebulas: {
+                      magnitude: 10,
+                  },
+
+                  brightnebulas: {
+                      magnitude: 10,
+                  }
+              });
+          });
+          
+
+          // Set up themes
+          $('#theme-day-select a').click(function(e) {
+              console.log("Selecting day theme");
+              $('body').removeClass(localStorage.getItem('theme'));
+              $('body').addClass('day');
+              $('#theme-' + localStorage.getItem('theme') + '-select').removeClass('active');
+              $('#theme-day-select').addClass('active');
+              $('#theme-' + localStorage.getItem('theme')).remove();
+              localStorage.setItem('theme', 'day');
+          });
+          $('#theme-mono-select a').click(function(e) {
+              console.log("Selecting mono theme");
+              $('body').removeClass(localStorage.getItem('theme'));
+              $('body').addClass('mono');
+              $('#theme-' + localStorage.getItem('theme') + '-select').removeClass('active');
+              $('#theme-mono-select').addClass('active');
+              $('#theme-' + localStorage.getItem('theme')).remove();
+              $('head').append('<link id="theme-mono" class="theme-style" rel="stylesheet" type="text/css" href="css/chart-mono.css">');
+              localStorage.setItem('theme', 'mono');
+          });
+          $('#theme-dark-select a').click(function(e) {
+              console.log("Selecting dark theme");
+              $('body').removeClass(localStorage.getItem('theme'));
+              $('body').addClass('dark');
+              $('#theme-' + localStorage.getItem('theme') + '-select').removeClass('active');
+              $('#theme-dark-select').addClass('active');
+              $('#theme-' + localStorage.getItem('theme')).remove();
+              $('head').append('<link id="theme-dark" class="theme-style" rel="stylesheet" type="text/css" href="css/chart-dark.css">');
+              localStorage.setItem('theme', 'dark');
+          });
+          $('#theme-night-select a').click(function(e) {
+              console.log("Selecting night theme");
+              $('body').removeClass(localStorage.getItem('theme'));
+              $('body').addClass('night');
+              $('#theme-' + localStorage.getItem('theme') + '-select').removeClass('active');
+              $('#theme-night-select').addClass('active');
+              $('#theme-' + localStorage.getItem('theme')).remove();
+              $('head').append('<link id="theme-night" class="theme-style" rel="stylesheet" type="text/css" href="css/chart-night.css">');
+              localStorage.setItem('theme', 'night');
+          });
+
+          // Restore theme from localstorage
+          if ('theme' in localStorage) {
+              console.log('restoring theme', localStorage.getItem('theme'));
+              $('#theme-' + localStorage.getItem('theme') + '-select a').trigger('click');
+          } else {
+              $('#theme-day-select a').trigger('click');
+          }
+
+
+      })(jQuery);
+    </script>
+  </body>
+</html>
+
+

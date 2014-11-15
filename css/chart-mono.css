@@ -1,0 +1,84 @@
+svg.observation-chart {
+    background-color: white;
+}
+
+.overlay { 
+}
+
+.globe {
+    fill: white;
+    stroke: rgb(35, 31, 32);
+}
+
+.graticule {
+    stroke: rgba(35, 31, 32, 0.25);
+}
+
+.star {
+  fill: black;
+}
+
+.galaxy {
+    fill: rgb(204, 204, 204); 
+  stroke: rgb(35,31,32);
+}
+
+.open-cluster {
+    fill: rgb(204, 204, 204); 
+    stroke: rgb(35, 31, 32); 
+}
+
+.globular-cluster circle {
+    fill: rgb(204, 204, 204); 
+    stroke: rgb(35,31,32);
+}
+.globular-cluster path {
+    stroke-width: 0.32; 
+    stroke: rgb(35, 31, 32);
+}
+
+.planetary-nebula {
+    fill: rgb(204, 204, 204); 
+    stroke: rgb(35, 31, 32);
+}
+
+.bright-nebula {
+    fill: rgb(204, 204, 204); 
+    stroke: rgb(35, 31, 32);
+}
+
+.constellation {
+    stroke: rgba(35, 31, 32, 0.25);
+}
+
+.zenith path {
+    stroke: rgb(204, 204, 204);
+}
+.ecliptic {
+    stroke: rgb(204, 204, 204);
+}
+
+.star-label { 
+    fill: rgba(35, 31, 32, 0.75);
+}
+.galaxy-label,
+.opencluster-label,
+.globularcluster-label,
+.planetarynebula-label,
+.brightnebula-label { 
+    fill: rgba(35, 31, 32, 0.75);
+}
+.zenith-label { 
+    fill: rgb(204, 204, 204);
+}
+.ecliptic-label { 
+    fill: rgb(204, 204, 204);
+}
+.constellation-label {
+    fill: rgba(0, 0, 0, 0.3); 
+}
+.chartinfo-label { 
+    fill: rgb(204, 204, 204);
+}
+
+

@@ -1,0 +1,100 @@
+svg.observation-chart {
+    background-color: black;
+}
+
+.overlay { 
+}
+.globe {
+    fill: black;
+    stroke: rgb(230, 228, 231);
+}
+.graticule {
+    stroke: rgba(230, 228, 231, 0.5);
+}
+
+/* The base style of a star. Size of the star on the chart is dependent
+ * on its magnitude */
+.star {
+  fill: white;
+}
+
+
+/* The base style for a galaxy. This appears as a red ellipse with a
+ * thin black border that is sized and oriented base on the object's
+ * size and orientation */
+.galaxy {
+    fill: rgb(151, 12, 17); 
+    stroke: rgb(230, 228, 231);
+}
+
+/* The base style for an open cluster. This appears as a yellow circle
+ * with a dashed black border. */
+.open-cluster {
+    fill: rgb(128, 121, 0);
+    stroke: rgb(230, 228, 231);
+}
+
+/* The base style for a globular cluster. This appears as a yellow
+ * square with a thin black border. */
+.globular-cluster circle {
+    fill: rgb(128, 121, 0);
+    stroke: rgb(230, 228, 231);
+}
+.globular-cluster path {
+    stroke: rgb(230, 228, 231);
+}
+
+/* The base style for a planetary nebula. This appears as a green circle
+ * with a thin black border with a horizontal and vertical line through
+ * it. */
+.planetary-nebula {
+    fill: rgb(75, 119, 24); 
+    stroke: rgb(230, 228, 231);
+}
+
+/* The base style for a bright nebula. This appears as a green
+ * square with a thin black border. */
+.bright-nebula {
+    fill: rgb(75, 119, 24); 
+    stroke: rgb(230, 228, 231);
+}
+
+.constellation {
+    stroke: rgb(106, 183, 52);
+}
+
+/* Chart features */
+.zenith path {
+    stroke: rgb(128,214,247);
+}
+.ecliptic {
+    stroke: rgb(128,214,247);
+}
+
+/* Labels */
+.star-label { 
+    fill: rgba(230, 228, 231, 0.75);
+}
+.galaxy-label,
+.opencluster-label,
+.globularcluster-label,
+.planetarynebula-label,
+.brightnebula-label { 
+    fill: rgba(230, 228, 231, 0.75);
+}
+.zenith-label { 
+    fill: rgba(230, 228, 231, 0.5);
+}
+.ecliptic-label { 
+    fill: rgba(230, 228, 231, 0.5);
+}
+.chartinfo-label { 
+    fill: rgba(230, 228, 231, 0.5);
+}
+
+.constellation-label {
+    fill: rgba(255, 255, 255, 0.3); 
+}
+
+
+
