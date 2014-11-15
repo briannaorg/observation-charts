@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>The Sky Tonight</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <link rel="stylesheet" type="text/css" href="../css/chart-base.css">
+    <style type="text/css">
+    </style>    
+  </head>
+  <body>
+    <!--
+    <div class="container">
+      <div class="page-header">
+        <h1>The Sky Tonight</h1>
+        <p class="lead"></p>
+      </div>
+
+      <div class="row text-center">
+      </div>
+    </div>
+    -->
+    <div id="full-sky"></div>
+
+    <script src="../bower_components/d3/d3.min.js" charset="utf-8"></script>
+    <script src="../bower_components/datejs/build/production/date.min.js" charset="utf-8"></script>
+    <script src="../bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
+    <script src="../js/chart.js" charset="utf-8"/>
+    <script>
+      (function($){
+        $('#full-sky').observationChart({
+            size: {
+                width: 1200,
+                height: 1200,
+            },
+        });
+      })(jQuery);
+    </script>
+  </body>
+</html>
+
+

@@ -1,0 +1,22 @@
+{
+  "name": "observation-charts",
+  "dependencies": {
+    "bootstrap": "~3",
+    "jquery": "~2.1.0",
+    "d3": "~3.4",
+    "datejs": "~1.0.0-rc1"
+  },
+  "version": "0.1",
+  "authors": [
+    "Will Barton <g@gulielmus.com>"
+  ],
+  "license": "BSD",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

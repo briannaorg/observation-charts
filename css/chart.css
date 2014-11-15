@@ -1,0 +1,143 @@
+/* Style matching the IAU constellation maps. */
+.overlay { 
+}
+
+/* The basic field on which we are drawing. A sterographic globe. */
+.globe {
+    fill: white;
+    stroke-width: 0.5;
+    stroke: rgb(35, 31, 32);
+}
+
+/* The longitude/latitude lines on our globe. */
+.graticule {
+    fill: none;
+    stroke-width: 0.25;
+    stroke: rgba(35, 31, 32, 0.25);
+}
+
+/* The base style of a star. Size of the star on the chart is dependent
+ * on its magnitude */
+.star {
+  fill: black;
+  fill-opacity: 0.9;
+}
+
+
+/* The base style for a galaxy. This appears as a red ellipse with a
+ * thin black border that is sized and oriented base on the object's
+ * size and orientation */
+.galaxy {
+  fill: rgb(236, 28, 36); 
+  fill-opacity: 0.9;
+  stroke-width: 0.32; 
+  stroke: rgb(35,31,32);
+}
+
+/* The base style for an open cluster. This appears as a yellow circle
+ * with a dashed black border. */
+.open-cluster {
+    fill: rgb(255, 242, 0); 
+    stroke-width: 0.8; 
+    stroke-linecap: round;
+    stroke: rgb(35, 31, 32); 
+    stroke-opacity: 1; 
+    stroke-dasharray: 0, 2.5;
+}
+
+/* The base style for a globular cluster. This appears as a yellow
+ * square with a thin black border. */
+.globular-cluster circle {
+    fill: rgb(255, 242, 0); 
+    stroke-width: 0.32; 
+    stroke: rgb(35,31,32);
+}
+.globular-cluster path {
+    stroke-width: 0.32; 
+    stroke: rgb(35, 31, 32);
+}
+
+/* The base style for a planetary nebula. This appears as a green circle
+ * with a thin black border with a horizontal and vertical line through
+ * it. */
+.planetary-nebula {
+    fill: rgb(128, 204, 40); 
+    stroke-width: 0.32; 
+    stroke: rgb(35, 31, 32);
+}
+
+/* The base style for a bright nebula. This appears as a green
+ * square with a thin black border. */
+.bright-nebula {
+    fill: rgb(128, 204, 40); 
+    stroke-width: 0.32; 
+    stroke: rgb(35, 31, 32);
+}
+
+.constellation {
+    fill: none; 
+    stroke-width: 0.64; 
+    stroke-linecap: butt; 
+    stroke-linejoin: miter; 
+    stroke: rgb(173,222,138); 
+    stroke-opacity: 1; 
+    stroke-miterlimit: 4;'
+}
+
+/* Chart features */
+.zenith {
+    fill: rgb(128,214,247);
+    stroke: rgb(128,214,247);
+}
+.zenith path {
+    stroke: rgb(128,214,247);
+}
+.ecliptic {
+    fill: none;
+    stroke-width: 0.96; 
+    stroke: rgb(128,214,247);
+}
+
+/* Labels */
+.star-label { 
+    font-size: 80%;
+    font-family: "Trebuchet MS", Helvetica, sans-serif; 
+    fill: rgba(35, 31, 32, 0.75);
+}
+.galaxy-label,
+.opencluster-label,
+.globularcluster-label,
+.planetarynebula-label,
+.brightnebula-label { 
+    font-size: 75%;
+    font-family: "Trebuchet MS", Helvetica, sans-serif; 
+    font-style: italic;
+    text-transform: uppercase;
+    fill: rgba(35, 31, 32, 0.75);
+}
+.zenith-label { 
+    font-size: 80%;
+    font-family: "Trebuchet MS", Helvetica, sans-serif; 
+    text-transform: uppercase;
+    fill: rgba(128, 214, 247, 0.5);
+}
+.ecliptic-label { 
+    font-size: 80%;
+    font-family: "Trebuchet MS", Helvetica, sans-serif; 
+    text-transform: uppercase;
+    fill: rgba(128, 214, 247, 0.5);
+}
+
+.constellation-label {
+    fill: rgba(0, 0, 0, 0.3); 
+    font-family: "Trebuchet MS", Helvetica, sans-serif; 
+    font-size: 80%; 
+    letter-spacing: 0.2em;
+    text-anchor: bottom; 
+    dominant-baseline:top; 
+    text-transform: uppercase; 
+    font-style: italic;'
+}
+
+
+
