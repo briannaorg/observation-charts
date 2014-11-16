@@ -460,7 +460,7 @@
               $('#theme-' + localStorage.getItem('theme') + '-select').removeClass('active');
               $('#theme-mono-select').addClass('active');
               $('#theme-' + localStorage.getItem('theme')).remove();
-              $('head').append('<link id="theme-mono" class="theme-style" rel="stylesheet" type="text/css" href="css/chart-mono.css">');
+              $('head').append('<link id="theme-mono" class="theme-style" rel="stylesheet" type="text/css" href="../css/chart-mono.css">');
               localStorage.setItem('theme', 'mono');
           });
           $('#theme-dark-select a').click(function(e) {
@@ -470,7 +470,7 @@
               $('#theme-' + localStorage.getItem('theme') + '-select').removeClass('active');
               $('#theme-dark-select').addClass('active');
               $('#theme-' + localStorage.getItem('theme')).remove();
-              $('head').append('<link id="theme-dark" class="theme-style" rel="stylesheet" type="text/css" href="css/chart-dark.css">');
+              $('head').append('<link id="theme-dark" class="theme-style" rel="stylesheet" type="text/css" href="../css/chart-dark.css">');
               localStorage.setItem('theme', 'dark');
           });
           $('#theme-night-select a').click(function(e) {
@@ -480,7 +480,7 @@
               $('#theme-' + localStorage.getItem('theme') + '-select').removeClass('active');
               $('#theme-night-select').addClass('active');
               $('#theme-' + localStorage.getItem('theme')).remove();
-              $('head').append('<link id="theme-night" class="theme-style" rel="stylesheet" type="text/css" href="css/chart-night.css">');
+              $('head').append('<link id="theme-night" class="theme-style" rel="stylesheet" type="text/css" href="../css/chart-night.css">');
               localStorage.setItem('theme', 'night');
           });
 
