@@ -4,11 +4,11 @@
     <title>The Sky Tonight</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../bower_components/jasny-bootstrap/dist/css/jasny-bootstrap.min.css">
-    <link rel="stylesheet" href="../bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/jasny-bootstrap/dist/css/jasny-bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
     
-    <link rel="stylesheet" type="text/css" href="../css/chart-base.css">
+    <link rel="stylesheet" type="text/css" href="css/chart-base.css">
     <style type="text/css">
         #sky-chart {
             width: 100%;
@@ -258,12 +258,10 @@
         <li id="sky-now"><a>Sky Right Now</a></li>
         <li id="sky-tonight" class="active"><a>Sky Tonight (10 PM)</a></li>
 
-        <!--
         <li class="divider"></li>
 
         <li id="sky-sd" class="active"><a>"SD"</a></li>
         <li id="sky-hd"><a>"HD"</a></li>
-        -->
 
         <li class="divider"></li>
         
@@ -285,20 +283,20 @@
     </nav>
 
     <button type="button" id="skychart-nav-toggle" class="navbar-toggle" data-toggle="offcanvas" data-target="#skychart-nav" >
-      O
+      <i class="glyphicon glyphicon-cog"></i>
     </button>
 
     <div id="sky-chart"></div>
 
-    <script src="../bower_components/d3/d3.min.js" charset="utf-8"></script>
-    <script src="../bower_components/datejs/build/production/date.min.js" charset="utf-8"></script>
-    <script src="../bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
-    <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
-    <script src="../bower_components/jasny-bootstrap/dist/js/jasny-bootstrap.min.js" charset="utf-8"></script>
-    <script src="../bower_components/moment/min/moment.min.js"></script>
-    <script src="../bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="bower_components/d3/d3.min.js" charset="utf-8"></script>
+    <script src="bower_components/datejs/build/production/date.min.js" charset="utf-8"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
+    <script src="bower_components/jasny-bootstrap/dist/js/jasny-bootstrap.min.js" charset="utf-8"></script>
+    <script src="bower_components/moment/min/moment.min.js"></script>
+    <script src="bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
     
-    <script src="../js/chart.js" charset="utf-8"/>
+    <script src="js/chart.js" charset="utf-8"/>
     <script>console.log("something!");</script>
     <script>
       (function($){
@@ -330,11 +328,6 @@
                   size: {
                       width: '100%',
                       height: '100%',
-                  },
-                  data: {
-                      constellations: '../constellations.json',
-                      objects: '../objects.json',
-                      stars: '../stars.json'
                   },
               };
 
@@ -377,6 +370,7 @@
           // Select "SD" (moderate magnitude stars/objects) and "HD" (low magnitude stars and objects)
           $('#sky-hd a').click(function(e) {
               $('#sky-sd').removeClass('active');
+              $('#sky-messier').removeClass('active');
               $('#sky-hd').addClass('active');
               $('#sky-chart').observationChart({
                   data: {
@@ -388,28 +382,29 @@
                   },
 
                   galaxies: {
-                      magnitude: 15
+                      magnitude: 8
                   },
                   
                   openclusters: {
-                      magnitude: 8,
+                      magnitude: 6
                   },
 
                   globularclusters: {
-                      magnitude: 12
+                      magnitude: 8
                   },
 
                   planetarynebulas: {
-                      magnitude: 20,
+                      magnitude: 10,
                   },
 
                   brightnebulas: {
-                      magnitude: 20,
+                      magnitude: 10,
                   }
               });
           });
           $('#sky-sd a').click(function(e) {
               $('#sky-hd').removeClass('active');
+              $('#sky-messier').removeClass('active');
               $('#sky-sd').addClass('active');
               $('#sky-chart').observationChart({
                   data: {
@@ -421,7 +416,7 @@
                   },
 
                   galaxies: {
-                      magnitude: 8,
+                      magnitude: 10
                   },
                   
                   openclusters: {
@@ -441,7 +436,6 @@
                   }
               });
           });
-          
 
           // Set up themes
           $('#theme-day-select a').click(function(e) {
@@ -460,7 +454,7 @@
               $('#theme-' + localStorage.getItem('theme') + '-select').removeClass('active');
               $('#theme-mono-select').addClass('active');
               $('#theme-' + localStorage.getItem('theme')).remove();
-              $('head').append('<link id="theme-mono" class="theme-style" rel="stylesheet" type="text/css" href="../css/chart-mono.css">');
+              $('head').append('<link id="theme-mono" class="theme-style" rel="stylesheet" type="text/css" href="css/chart-mono.css">');
               localStorage.setItem('theme', 'mono');
           });
           $('#theme-dark-select a').click(function(e) {
@@ -470,7 +464,7 @@
               $('#theme-' + localStorage.getItem('theme') + '-select').removeClass('active');
               $('#theme-dark-select').addClass('active');
               $('#theme-' + localStorage.getItem('theme')).remove();
-              $('head').append('<link id="theme-dark" class="theme-style" rel="stylesheet" type="text/css" href="../css/chart-dark.css">');
+              $('head').append('<link id="theme-dark" class="theme-style" rel="stylesheet" type="text/css" href="css/chart-dark.css">');
               localStorage.setItem('theme', 'dark');
           });
           $('#theme-night-select a').click(function(e) {
@@ -480,7 +474,7 @@
               $('#theme-' + localStorage.getItem('theme') + '-select').removeClass('active');
               $('#theme-night-select').addClass('active');
               $('#theme-' + localStorage.getItem('theme')).remove();
-              $('head').append('<link id="theme-night" class="theme-style" rel="stylesheet" type="text/css" href="../css/chart-night.css">');
+              $('head').append('<link id="theme-night" class="theme-style" rel="stylesheet" type="text/css" href="css/chart-night.css">');
               localStorage.setItem('theme', 'night');
           });
 
