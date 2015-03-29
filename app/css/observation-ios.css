@@ -1,0 +1,26 @@
+
+/* Use iOS-specific icons */
+header .ionicon {
+  display: inline-block;
+  line-height: 12px;
+  font-size: 24px;
+}
+.ionicon {
+  display: inline-block;
+  font-family: "Ionicons";
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  text-rendering: auto;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.ionicon.icon-day:before {
+  content:"\f4b7";
+}
+.ionicon.icon-night:before {
+    content: "\f468"
+}

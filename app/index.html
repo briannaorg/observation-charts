@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Observation Charts</title>
+
+    <!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+
+    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link href="lib/ratchet/css/ratchet.css" rel="stylesheet">
+    <link href="lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+    <link href="css/observation.css" rel="stylesheet">
+    <link href="css/observation-ios.css" rel="stylesheet">
+    <link href="css/chart-base.css" rel="stylesheet">
+
+  </head>
+  <body>
+
+    <!-- Make sure all your bars are the first things in your <body> -->
+    <header class="bar bar-nav">
+      <a class="icon icon-search pull-left" data-transition="slide-in">
+        <span></span>
+      </a>
+      <a class="icon icon-bars pull-right" data-transition="slide-in">
+        <span></span>
+      </a>
+     
+      <!-- <h1 class="title">Observation Charts</h1> -->
+
+      <div class="segmented-control">
+        <a class="control-item" id="chart-control-day">Day</a>
+        <a class="control-item" id="chart-control-night">Night</a>
+      </div>
+
+    </header>
+
+    <div class="content">
+    </div>
+
+    <!-- The chart. Store it outside of #content so we only have to
+         generate it when we need to, not when the view transitions in and out. -->
+    <div id="chart-content"></div>
+
+    <script src="lib/d3/d3.min.js" charset="utf-8"></script>
+    <script src="lib/datejs/date.min.js" charset="utf-8"></script>
+    <script src="lib/jquery/jquery.min.js" charset="utf-8"></script>
+    <script src="lib/ratchet/js/ratchet.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/observation.js"></script>
+  </body>
+</html>
+

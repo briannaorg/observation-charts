@@ -1,0 +1,46 @@
+#chart-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: 5;
+}
+
+/* Some general Ratchet fixes */
+/*
+header.bar {
+  background-color: rgba(247, 247, 247, 0.8);
+}
+*/
+header.bar.bar-nav .icon.pull-left {
+  padding-right: 10px;
+}
+header.bar.bar-nav .icon.pull-right {
+  padding-left: 10px;
+}
+  
+
+/* Add day/night support to Ratchet styles */
+body.night .bar-nav .icon {
+   color: rgb(255, 51, 51);
+}
+body.night header.bar {
+  background-color: rgba(51, 0, 0, 0.8);
+}
+
+body.night .segmented-control .control-item.active {
+  color: #000; 
+  background-color: rgb(127, 10, 14);
+}
+body.night .segmented-control .control-item {
+  color: rgb(255, 51, 51);
+  border-color: rgb(127, 10, 14);
+}
+body.night .segmented-control {
+  background-color: transparent;
+  border: 1px solid rgb(127, 10, 14);
+}
+
+
