@@ -51,6 +51,8 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
 
         // Initialization
         base.init = function(){
+            base.options = $.extend(true, {},ObservationChart.defaultOptions, base.options, options);
+
             // Select our container and create the SVG element.
             base.container = d3.select(base.el);
             base.svg = base.container.append('svg').attr('class', 'observation-chart');
@@ -90,14 +92,6 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
             // Create and configure the geographic path generator
             base.path = d3.geo.path().projection(base.projection);
 
-            // Do options-based initialization and drawing
-            base.update(options);
-
-        };
-
-        base.update = function(options) {
-            base.options = $.extend(true, {},ObservationChart.defaultOptions, base.options, options);
-
             // Set up the chart's date/time
             base.datetime = base.options.date;
             if (base.options.time > 0)
@@ -118,7 +112,6 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
 
             // Center the projection
             base.projection.rotate(base.utils.zenith());
-            console.log("zenith", base.utils.zenith());
 
             // Set up zooming
             if (base.options.zoom) {
@@ -143,19 +136,25 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
 
             // Draw the chart
             base.draw();
+
+            // Update the projection's rotation with the current datetime
+            base.$el.on('drawn', function(e) {
+                if ((base.options.autoupdate >= 0) && (base.options.time == undefined)) {
+                    base.updateInterval = setInterval(function() {
+                          // First update the datetime
+                          base.datetime = new Date();
+
+                          // Then update the projection
+                          base.update();
+                          console.log("Updating for", base.datetime);
+                        },
+                        base.options.autoupdate * 1000);
+                }
+            });
         };
 
+        // Do the initial drawing of the chart.
         base.draw = function() {
-            console.log("drawing");
-
-            base.lines_group.selectAll("*").remove();
-            base.chart_group.selectAll("*").remove();
-            base.const_group.selectAll("*").remove();
-            base.obj_group.selectAll("*").remove();
-            base.star_group.selectAll("*").remove();
-            base.solarsystem_group.selectAll("*").remove();
-            base.label_group.selectAll("*").remove();
-            
             // Globe Outline
             base.globe = base.lines_group.selectAll('path.globe').data([{type: 'Sphere'}])
                 .enter().append('path')
@@ -176,27 +175,54 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
             // Draw other chart features
             base.drawZenith();
             base.drawEcliptic();
-            base.drawInformation();
             
             // Load the constellations
-            d3.json(base.options.data.constellations, function(error, data) {
-                base.drawConstellations(error, data);
+            d3.json(base.options.data.constellations, function(data) {
+                base.constellationData = data;
+                base.drawConstellations(base.constellationData);
 
                 // Load the object catalog
-                d3.json(base.options.data.objects, function(error, data) {
-                    base.drawObjects(error, data);
+                d3.json(base.options.data.objects, function(data) {
+                    base.objectData = data;
+                    base.drawObjects(base.objectData);
 
                     // Load the star catalog
-                    d3.json(base.options.data.stars, function(error, data) {
-                        base.drawStars(error, data);
+                    d3.json(base.options.data.stars, function(data) {
+                        base.starData = data;
+                        base.drawStars(base.starData);
 
                         // Draw the solar System
                         base.drawSolarSystem();
-
                         base.$el.trigger('drawn', [base])
                     });
                 });
             });
+        };
+
+        // Update the chart. This would be called if the datetime the
+        // chart is intended for is changed somehow.
+        base.update = function() {
+            // Update the projection
+            base.projection.rotate(base.utils.zenith());
+
+            // Update graticule lines
+            if (base.options.graticule) {
+                var graticules = base.lines_group.selectAll('path.graticule')
+                    .data([base.graticule()]);
+                graticules.enter().append('path')
+                    .attr('class', 'graticule');
+                graticules.attr('d', base.path);
+                graticules.exit();
+            }
+
+            // Update chart features
+            base.drawZenith();
+            base.drawEcliptic();
+            base.drawConstellations(base.constellationData);
+            base.drawStars(base.starData);
+            base.drawObjects(base.objectData);
+            base.drawSolarSystem();
+
         };
 
         // Draw labels for the given objects with the given css class
@@ -207,12 +233,13 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
             var labelElements = base.label_group.selectAll('text.' + cssClass)
                 .data(objects.filter(function(d) { 
                     return base.path(d) != undefined && base.data.overrides(d).hasOwnProperty('name');
-                }))
-                .enter().append('text')
+                }));
+            labelElements.enter().append('text')
                 .attr('id', function(d) { return d.properties.id + '-label'; })
                 .attr('class', cssClass + ' label')
                 .style('text-anchor', 'middle')
-                .attr('transform', function(d) { 
+                .text(function(d) { return base.data.overrides(d).name; });
+            labelElements.attr('transform', function(d) { 
                     // The SVG coordinate system is from the top left
                     // corner of the image. For calculating theta, we
                     // need the origin to be in the center of the image
@@ -226,7 +253,6 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
 
                     return 'translate(' + svgx + ',' + svgy + ')rotate(' + angle + ')';
                 })
-                .text(function(d) { return base.data.overrides(d).name; });
 
             return labelElements;
 
@@ -236,11 +262,6 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
             var feature = [base.utils.zenithFeature()];
             base.path.pointRadius(2);
             
-            // base.chart_group.selectAll('path.zenith').data(feature)
-            //     .enter().append('path')
-            //     .attr('class', 'zenith')
-            //     .attr('d', base.path);
-
             var zenithElm = base.chart_group.selectAll('g.zenith')
                 .data(feature)
                 .enter().append('g')
@@ -263,13 +284,11 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
                                 [coords[0],coords[1]+base.options.zenith.size]]);
                     });
             
-            // base.drawLabelsForObjects(feature, 'zenith-label', 
-            //         function(d) { return base.path.centroid(d)[0]; },
-            //         function(d) { return base.path.centroid(d)[1] + 15; });
         };
 
         base.drawEcliptic = function() {
-            // Construct and points of the ecliptic
+
+            // Construct the points of the ecliptic
             var epsilon = 23.44 * PI_OVER_180;
             var cos_epsilon = Math.cos(epsilon);
             var sin_epsilon = Math.sin(epsilon);
@@ -295,13 +314,10 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
                 "properties": {"name": "Ecliptic"}
             }];
             
-            base.chart_group.selectAll('path.ecliptic').data(ecliptic_feature)
-                .enter().append('path')
-                .attr('class', 'ecliptic')
-                .attr('d', base.path);
-            // base.drawLabelsForObjects(ecliptic_feature, 'ecliptic-label', 
-            //         function(d) { return base.path.centroid(d)[0]; },
-            //         function(d) { return base.path.centroid(d)[1]; });
+            var ecliptic = base.chart_group.selectAll('path.ecliptic').data(ecliptic_feature);
+            ecliptic.enter().append('path')
+                .attr('class', 'ecliptic');
+            ecliptic.attr('d', base.path);
 
         };
 
@@ -350,18 +366,19 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
             
         };
 
+        // Draw solar system objects
         base.drawSolarSystem = function() {
             //http://www.stjarnhimlen.se/comp/ppcomp.html
 
             // Sun
             var sunFeature = base.utils.sunFeature();
             base.path.pointRadius(function(d) { return 20; });
-            base.solarsystem_group.selectAll('path.star')
-                .data([sunFeature])
-                .enter().append('path')
+            var sun = base.solarsystem_group.selectAll('path.star')
+                .data([sunFeature]);
+            sun.enter().append('path')
                 .attr('class', 'star')
-                .attr('id', 'sun')
-                .attr('d', base.path);
+                .attr('id', 'sun');
+            sun.attr('d', base.path);
             base.drawLabelsForObjects([sunFeature], 'sun-label', 
                     function(d) { return base.path.centroid(d)[0]; },
                     function(d) { return base.path.centroid(d)[1] - 30; });
@@ -369,27 +386,24 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
             // Moon 
             var moonFeature = base.utils.moonFeature();
             base.path.pointRadius(function(d) { return 8; });
-            base.solarsystem_group.selectAll('path.planetary')
-                .data([moonFeature])
-                .enter().append('path')
+            var moon = base.solarsystem_group.selectAll('path.planetary')
+                .data([moonFeature]);
+            moon.enter().append('path')
                 .attr('class', 'planetary')
-                .attr('id', 'moon')
-                .attr('d', base.path);
+                .attr('id', 'moon');
+            moon.attr('d', base.path);
             base.drawLabelsForObjects([moonFeature], 'moon-label', 
                     function(d) { return base.path.centroid(d)[0]; },
                     function(d) { return base.path.centroid(d)[1] - 12; });
-            
-
         };
             
-        base.drawConstellations = function(error, data) {
-            // Handle errors getting and parsing the data
-            if (error) { console.log(error); return error; }
-
-            base.const_group.selectAll('path.constellation').data(data.features)
-                .enter().append('path')
-                .attr('class', 'constellation')
-                .attr('d', base.path);
+        // Draw constellations for the given fixtures
+        base.drawConstellations = function(data) {
+            var constellations = base.const_group.selectAll('path.constellation')
+                .data(data.features);
+            constellations.enter().append('path')
+                .attr('class', 'constellation');
+            constellations.attr('d', base.path);
 
             base.drawLabelsForObjects(data.features, 'constellation-label', 
                     function(d) { return base.path.centroid(d)[0]; },
@@ -397,10 +411,8 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
 
         };
 
-        base.drawStars = function(error, data) {
-            // Handle errors getting and parsing the data
-            if (error) { return error; }
-
+        // Draw stars for the given fixtures
+        base.drawStars = function(data) {
             var stars = $.grep(data.features, function(d) {
                 return d.properties.magnitude <= base.options.stars.magnitude;
             });
@@ -418,12 +430,12 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
             base.path.pointRadius(function(d) {
                 return rScale(d.properties.magnitude);
             });
-            base.star_group.selectAll('path.star')
-                .data(stars.filter(function(d) { return base.path(d) != undefined; }))
-                .enter().append('path')
+            var starElms = base.star_group.selectAll('path.star')
+                .data(stars);
+            starElms.enter().append('path')
                 .attr('class', 'star')
-                .attr('id', function(d) { return d.properties.id; })
-                .attr('d', base.path);
+                .attr('id', function(d) { return d.properties.id; });
+            starElms.attr('d', base.path);
 
             base.drawLabelsForObjects(stars, 'star-label', 
                     function(d) { return base.path.centroid(d)[0]; },
@@ -431,10 +443,8 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
 
         };
 
-        base.drawObjects = function(error, data) {
-            // Handle errors getting and parsing the data
-            if (error) { return error; }
-
+        // Draw deep sky objects for the given features
+        base.drawObjects = function(data) {
             console.log(data.features[0]);
 
             // Galaxies
@@ -463,10 +473,11 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
                     return d3.min(d.properties.size); }))
                 .range(base.options.galaxies.minorscale);
             var galaxyElms = base.obj_group.selectAll('ellipse.galaxy')
-                .data(galaxies)
-                .enter().append('ellipse')
+                .data(galaxies);
+            galaxyElms.enter().append('ellipse')
                 .attr("id", function(d) { return d.properties.id; })
-                .attr('class', 'galaxy object')
+                .attr('class', 'galaxy object');
+            galaxyElms
                 .attr('cx', function(d) { return base.projection(d.geometry.coordinates)[0]; })
                 .attr('cy', function(d) { return base.projection(d.geometry.coordinates)[1]; })
                 .attr('rx', function(d) { return galaxyMajorScale(d.properties.size[0]); })
@@ -508,10 +519,11 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
                     return d.properties.magnitude; }))
                 .range(base.options.openclusters.scale);
             var openClusterElms = base.obj_group.selectAll('circle.open-cluster')
-                .data(openClusters)
-                .enter().append('circle')
+                .data(openClusters);
+            openClusterElms.enter().append('circle')
                 .attr("id", function(d) { return d.properties.id; })
-                .attr('class', 'open-cluster object')
+                .attr('class', 'open-cluster object');
+            openClusterElms
                 .attr('cx', function(d) { return base.projection(d.geometry.coordinates)[0]; })
                 .attr('cy', function(d) { return base.projection(d.geometry.coordinates)[1]; })
                 .attr('r', function(d) { return openClusterMagnitudeScale(d.properties.magnitude); });
@@ -546,16 +558,19 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
                     return d.properties.magnitude; }))
                 .range(base.options.globularclusters.scale);
             var globularClusterElms = base.obj_group.selectAll('g.globular-cluster')
-                .data(globularClusters)
-                .enter().append('g')
+                .data(globularClusters);
+            globularClusterElms.enter().append('g')
                     .attr("id", function(d) { return d.properties.id; })
                     .attr('class', 'globular-cluster object');
-            globularClusterElms.append('circle')
+            globularClusterElms.append('circle');
+            globularClusterElms.select('circle')
                     .attr('cx', function(d) { return base.projection(d.geometry.coordinates)[0]; })
                     .attr('cy', function(d) { return base.projection(d.geometry.coordinates)[1]; })
                     .attr('r', function(d) { return globularClusterMagnitudeScale(d.properties.magnitude); });
+
             globularClusterElms.append('path')
-                    .attr('d', function(d) {
+                    .attr('class', 'vertical');
+            globularClusterElms.select('path.vertical').attr('d', function(d) {
                         var coords = [
                             base.projection(d.geometry.coordinates)[0],
                             base.projection(d.geometry.coordinates)[1]
@@ -571,7 +586,8 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
                         return line;
                     });
             globularClusterElms.append('path')
-                    .attr('d', function(d) {
+                    .attr('class', 'horizontal');
+            globularClusterElms.select('path.horizontal').attr('d', function(d) {
                         var coords = [
                             base.projection(d.geometry.coordinates)[0],
                             base.projection(d.geometry.coordinates)[1]
@@ -585,6 +601,7 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
                                      d.properties.magnitude)]
                                  ]);
                     });
+
             var globularClusterLabels = base.drawLabelsForObjects(globularClusters, 'globularcluster-label', 
                     function(d) { return base.path.centroid(d)[0]; },
                     function(d) { return base.path.centroid(d)[1] - globularClusterMagnitudeScale(d.properties.magnitude) * 2; });
@@ -617,15 +634,18 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
                     return d.properties.magnitude; }))
                 .range(base.options.planetarynebulas.scale);
             var planetaryNebulaElms = base.obj_group.selectAll('g.planetary-nebula')
-                .data(planetaryNebulas)
-                .enter().append('g')
+                .data(planetaryNebulas);
+            planetaryNebulaElms.enter().append('g')
                     .attr("id", function(d) { return d.properties.id; })
                     .attr('class', 'planetary-nebula object');
-            planetaryNebulaElms.append('circle')
+            planetaryNebulaElms.append('circle');
+            planetaryNebulaElms.select('circle')
                     .attr('cx', function(d) { return base.projection(d.geometry.coordinates)[0]; })
                     .attr('cy', function(d) { return base.projection(d.geometry.coordinates)[1]; })
                     .attr('r', function(d) { return planetaryNebulaMagnitudeScale(d.properties.magnitude)/2; });
             planetaryNebulaElms.append('path')
+                    .attr('class', 'vertical');
+            planetaryNebulaElms.select('path.vertical')
                     .attr('d', function(d) {
                         var coords = [
                             base.projection(d.geometry.coordinates)[0],
@@ -642,6 +662,8 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
                         return line;
                     });
             planetaryNebulaElms.append('path')
+                    .attr('class', 'horizontal');
+            planetaryNebulaElms.select('path.horizontal')
                     .attr('d', function(d) {
                         var coords = [
                             base.projection(d.geometry.coordinates)[0],
@@ -687,10 +709,11 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
                     return d.properties.magnitude; }))
                 .range(base.options.brightnebulas.scale);
             var brightNebulaElms = base.obj_group.selectAll('rect.bright-nebula')
-                .data(brightNebulas)
-                .enter().append('rect')
+                .data(brightNebulas);
+            brightNebulaElms.enter().append('rect')
                 .attr("id", function(d) { return d.properties.id; })
-                .attr('class', 'bright-nebula object')
+                .attr('class', 'bright-nebula object');
+            brightNebulaElms
                 .attr('x', function(d) { return base.projection(d.geometry.coordinates)[0]; })
                 .attr('y', function(d) { return base.projection(d.geometry.coordinates)[1]; })
                 .attr('height', function(d) { return brightNebulaMagnitudeScale(d.properties.magnitude); })
@@ -864,8 +887,7 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
             return LMST;
         };
 
-
-
+        // Get the position of the sun
         base.utils.sun = function(date) {
             if(!date) date = base.datetime;
 
@@ -893,6 +915,7 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
             return {lat:lat, lon:lon, Mo:Mo, D:D, N:N};
         }
 
+        // Create a GeoJSON feature for the sun
         base.utils.sunFeature = function() {
             var coords = base.utils.sun();
             var sun_feature = { 
@@ -910,7 +933,7 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
             return sun_feature;
         }; 
 
-
+        // Get the moon's position
         base.utils.moon = function(date) {
             if(!date) date = base.datetime;
 
@@ -959,6 +982,7 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
             return [Bm, lm];
         }
 
+        // Create a GeoJSON feature for the moon
         base.utils.moonFeature = function() {
             var coords = base.utils.moon();
             var moon_feature = { 
@@ -976,6 +1000,7 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
             return moon_feature;
         }; 
 
+        // Get the zenith for the currently selected datetime.
         base.utils.zenith = function() {
             if(!base.options.center) {
                 var date = base.datetime;
@@ -988,6 +1013,7 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
             return [base.options.center.ra * 15, -1 * base.options.center.dec];
         };
 
+        // Construct a GeoJSON feature for the zenith.
         base.utils.zenithFeature = function() {
             var coords = base.utils.zenith();
             var zenith_feature = { 
@@ -1277,6 +1303,11 @@ var ONEEIGHTY_OVER_PI = 180/Math.PI;
         // to be, set it here
         // time: 21,
         time: undefined,
+
+        // If a specific time is undefined, the chart will automatically
+        // update periodically with the given number of seconds. -1
+        // means no autoupdating.
+        autoupdate: -1,
 
         // The location from which the sky is observered
         location: {

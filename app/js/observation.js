@@ -9,6 +9,7 @@
             height: chartHeight,
         },
         scale: 6,
+        autoupdate: 60,
         data: {
             constellations: '/data/constellations.json',
             objects: '/data/objects.json',
