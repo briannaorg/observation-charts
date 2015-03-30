@@ -37,13 +37,18 @@
 
     // App State Events
     // ================
-    
 
+    function selectDeviceTheme(theme) {
+        $('#ratchet-theme').remove();
+        $('head').append('<link id="ratchet-theme" rel="stylesheet" type="text/css" href="lib/ratchet/css/ratchet-theme-' + theme + '.css">');
+        $('head').append('<link href="css/observation-' + theme + '.css" rel="stylesheet">');
+    }
+    
     // Set iOS/Android CSS as necessary
     if( /Android/i.test(navigator.userAgent) ) {
-        $('head').append('<link href="lib/ratchet/css/ratchet-theme-android.css" rel="stylesheet">');
+        selectDeviceTheme('android');
     } else if( /iPhone|iPad|iPod/i.test(navigator.userAgent) ) {
-        $('head').append('<link href="lib/ratchet/css/ratchet-theme-ios.css" rel="stylesheet">');
+        selectDeviceTheme('ios');
     }
       
     // Intercept 'push' events to hide/show the chart as needed.
@@ -65,12 +70,6 @@
     // Chart-changing events
     // =====================
     
-    // FOR DEBUG PURPOSES
-    function switchRatchetTheme(theme) {
-        // Switch the CSS file
-        $('#ratchet-theme').remove();
-        $('head').append('<link id="ratchet-theme" rel="stylesheet" type="text/css" href="lib/ratchet/css/ratchet-theme-' + theme + '.css">');
-    }
     
     // Change the Chart theme. 
     function switchChartTheme(theme) {

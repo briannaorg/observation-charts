@@ -22,12 +22,14 @@ header.bar.bar-nav .icon.pull-right {
 }
   
 
+
 /* Add day/night support to Ratchet styles */
 body.night .bar-nav .icon {
    color: rgb(255, 51, 51);
 }
 body.night header.bar {
   background-color: rgba(51, 0, 0, 0.8);
+  border-bottom-color: rgb(127, 10, 14);
 }
 
 body.night .segmented-control .control-item.active {

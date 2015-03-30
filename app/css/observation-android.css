@@ -1,4 +1,30 @@
 
+/* Add day/night support to Ratchet styles */
+body.night .bar-nav .icon {
+   color: rgb(255, 51, 51);
+}
+body.night header.bar {
+  background-color: rgba(51, 0, 0, 0.8);
+  border-bottom-color: rgb(127, 10, 14);
+  border-bottom: 1px solid rgb(127, 10, 14);
+  -webkit-box-shadow: inset 0 -2px 0 rgb(104, 8, 12), 0 3px 3px rgba(0, 0, 0, .07);
+          box-shadow: inset 0 -2px 0 rgb(104, 8, 12), 0 3px 3px 
+}
+
+body.night .segmented-control .control-item.active {
+  color: #000; 
+  background-color: rgb(104, 8, 12);
+}
+body.night .segmented-control .control-item {
+  color: #000; 
+  background-color: rgb(127, 10, 14);
+  border-color: transparent;
+  border-left: 1px solid rgb(127, 10, 14);
+}
+body.night .segmented-control {
+  border: 0;
+}
+
 /* Use Android-specific icons */
 .ionicon {
   display: inline-block;
