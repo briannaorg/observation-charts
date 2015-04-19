@@ -4,10 +4,8 @@
     <meta charset="utf-8">
     <title>Observation Charts</title>
 
-    <!-- Sets initial viewport load and disables zooming  -->
     <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 
-    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
@@ -15,35 +13,94 @@
     <link href="lib/ionicons/css/ionicons.min.css" rel="stylesheet">
     <link href="css/observation.css" rel="stylesheet">
     <link href="css/chart-base.css" rel="stylesheet">
-
   </head>
   <body>
 
     <!-- Make sure all your bars are the first things in your <body> -->
     <header class="bar bar-nav">
-      <a class="icon icon-search pull-left" data-transition="slide-in">
+      <a class="icon icon-bars pull-left" href="#confmodal">
         <span></span>
       </a>
-      <a class="icon icon-bars pull-right" data-transition="slide-in">
+      <a class="icon icon-search pull-right" href="#searchmodal">
         <span></span>
       </a>
-     
+      
       <!-- <h1 class="title">Observation Charts</h1> -->
 
       <div class="segmented-control">
         <a class="control-item" id="chart-control-day">Day</a>
         <a class="control-item" id="chart-control-night">Night</a>
       </div>
-
     </header>
 
-    <div class="content">
+    <div class="content" id="chart">
+      <div id="chart-content"></div>
     </div>
 
-    <!-- The chart. Store it outside of #content so we only have to
-         generate it when we need to, not when the view transitions in and out. -->
-    <div id="chart-content"></div>
+    <!-- Configuration -->
+    <div id="confmodal" class="modal">
+      <header class="bar bar-nav">
+        <a class="icon icon-close pull-right" href="#confmodal"></a>
+        <h1 class="title">Observation Charts</h1>
+      </header>
 
+      <div class="content">
+        <ul class="table-view">
+          <li class="table-view-divider">Date/Time</li>
+          <li class="table-view-cell"><a id="conf-control-datatime-now">Now</a></li>
+          
+          <li class="table-view-divider">Chart</li>
+          <li class="table-view-cell">
+            Constellations
+            <div class="toggle active" id="conf-control-constellations">
+              <div class="toggle-handle"></div></div>
+          </li>
+          <li class="table-view-cell">
+            Stars
+            <div class="toggle active" id="conf-control-stars">
+              <div class="toggle-handle"></div></div>
+          </li>
+          <li class="table-view-cell">
+            Galaxies
+            <div class="toggle active" id="conf-control-galaxies">
+              <div class="toggle-handle"></div></div>
+          </li>
+          <li class="table-view-cell">
+            Globular Clusters
+            <div class="toggle active" id="conf-control-globularclusters">
+              <div class="toggle-handle"></div></div>
+          </li>
+          <li class="table-view-cell">
+            Open Clusters
+            <div class="toggle active" id="conf-control-openclusters">
+              <div class="toggle-handle"></div></div>
+          </li>
+          <li class="table-view-cell">
+            Planetary Nebulas
+            <div class="toggle active" id="conf-control-planetarynebulas">
+              <div class="toggle-handle"></div></div>
+          </li>
+          <li class="table-view-cell">
+            Bright Nebulas
+            <div class="toggle active" id="conf-control-brightnebulas">
+              <div class="toggle-handle"></div></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div id="searchmodal" class="modal">
+      <header class="bar bar-nav">
+        <a class="icon icon-close pull-right" href="#searchmodal"></a>
+        <h1 class="title">Search</h1>
+      </header>
+
+      <div class="content">
+        <p class="content-padded">The contents of my modal go here. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</p>
+      </div>
+    </div>
+        
     <script src="lib/d3/d3.min.js" charset="utf-8"></script>
     <script src="lib/datejs/date.min.js" charset="utf-8"></script>
     <script src="lib/jquery/jquery.min.js" charset="utf-8"></script>

@@ -37,7 +37,6 @@
 
     // App State Events
     // ================
-
     function selectDeviceTheme(theme) {
         $('#ratchet-theme').remove();
         $('head').append('<link id="ratchet-theme" rel="stylesheet" type="text/css" href="lib/ratchet/css/ratchet-theme-' + theme + '.css">');
@@ -51,25 +50,8 @@
         selectDeviceTheme('ios');
     }
       
-    // Intercept 'push' events to hide/show the chart as needed.
-    window.addEventListener('push', function(e) {
-      console.log("got push event");
-      console.log(e);
-
-      // If index.html is in the URL, make sure the chart is shown.
-      if (e.detail.state.url.search('index.html')) {
-          console.log("showing chart");
-          $('#chart-content').show();
-      } else  {
-          console.log("hiding chart");
-          $('#chart-content').hide();
-      }
-
-    });
-
     // Chart-changing events
     // =====================
-    
     
     // Change the Chart theme. 
     function switchChartTheme(theme) {
@@ -108,14 +90,12 @@
     } else {
         $('#chart-control-day').trigger('click');
     }
-    
 
     // Draw the chart.
     $('#chart-content').observationChart(chartOptions);
     $('#chart-content').on('drawn', function(e) {
         console.log("drawn");
     });
-
 
 })(jQuery);
 
